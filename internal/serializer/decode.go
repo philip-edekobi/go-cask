@@ -4,9 +4,13 @@ import (
 	"encoding/binary"
 )
 
-func DecodeKV(record []byte) *Record {
+func DecodeKV(record []byte) (*Record, error) {
 	r := &Record{}
 	var start, end int
+
+	if !verifyHash(record) {
+		return nil, CorruptionError{}
+	}
 
 	end = FIELDSIZE
 	r.CrcChecksum = record[start:end]
@@ -31,5 +35,5 @@ func DecodeKV(record []byte) *Record {
 	end += r.ValueSz
 	r.Value = string(record[start:end])
 
-	return r
+	return r, nil
 }

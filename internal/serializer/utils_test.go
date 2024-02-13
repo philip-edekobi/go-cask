@@ -14,3 +14,9 @@ func TestConcatSlices(t *testing.T) {
 
 	require.Equal(t, expected, merged)
 }
+
+func TestVerifyHash(t *testing.T) {
+	record := EncodeKV("name", "adam")
+
+	require.True(t, verifyHash(record))
+}

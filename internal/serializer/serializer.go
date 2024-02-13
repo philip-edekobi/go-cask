@@ -13,3 +13,9 @@ type Record struct {
 	Key         string
 	Value       string
 }
+
+type CorruptionError struct{}
+
+func (c CorruptionError) Error() string {
+	return "data does not match checksum"
+}

@@ -1,6 +1,10 @@
 package serializer
 
-import "encoding/binary"
+import (
+	"encoding/binary"
+	"hash/crc32"
+	"slices"
+)
 
 func int32ToBytes(num int32) []byte {
 	bytes := make([]byte, 4)
@@ -33,4 +37,16 @@ func concatSlices(slices [][]byte) []byte {
 	}
 
 	return result
+}
+
+func verifyHash(record []byte) bool {
+	checksum := record[:FIELDSIZE]
+
+	hashBytes := make([]byte, 4)
+
+	crc := crc32.Checksum(record[FIELDSIZE:], crc32.MakeTable(crc32.IEEE))
+
+	binary.LittleEndian.PutUint32(hashBytes, crc)
+
+	return slices.Compare(checksum, hashBytes) == 0
 }

@@ -12,8 +12,9 @@ func TestEncoderAndDecoder(t *testing.T) {
 
 	codedBytes := EncodeKV(key, val)
 
-	decodedRecord := DecodeKV(codedBytes)
+	decodedRecord, err := DecodeKV(codedBytes)
 
+	require.Nil(t, err)
 	require.Equal(t, key, decodedRecord.Key)
 	require.Equal(t, val, decodedRecord.Value)
 }
