@@ -3,12 +3,15 @@ package gocask
 import (
 	"os"
 	"strconv"
+
+	"github.com/philip-edekobi/go-cask/internal/dbmanager"
 )
 
 const (
 	SettingsFile = "./data/default_settings.json"
-	DataDir      = "./data/datfiles/"
 )
+
+var DataDir = "./data/datfiles/"
 
 var settings Settings
 
@@ -53,10 +56,29 @@ func init() {
 }
 
 func Open(dir string) *BitCaskHandle {
+	if len(dir) > 0 {
+		DataDir = dir
+	}
+	cask := &BitCaskHandle{}
 	// check if there are other bitcask instances
+
 	// get file next name
+	newFileName, err := nextFileName()
+	if err != nil {
+		panic(err)
+	}
+
 	// create and open file
+	dbFile, err := dbmanager.OpenFileRW(newFileName)
+	if err != nil {
+		panic(err)
+	}
+	cask.DBFile = dbFile
+
 	// read previous files and build KeyDir
+	// TODO: if there are other bitcasks, copy their KeyDir
+	buildKeyDir(cask)
+
 	// return bitcask instance
-	return nil
+	return cask
 }

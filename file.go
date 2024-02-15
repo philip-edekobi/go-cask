@@ -10,7 +10,7 @@ func nextFileName() (string, error) {
 	name := DataDir + "gocask_"
 	number := 1
 
-	dir, err := os.ReadDir("./data/datfiles/")
+	dir, err := os.ReadDir(DataDir)
 	if err != nil {
 		return "", err
 	}
@@ -21,5 +21,5 @@ func nextFileName() (string, error) {
 		}
 	}
 
-	return name + strconv.Itoa(number) + ".data", nil
+	return DataDir + name + strconv.Itoa(number) + ".data", nil
 }
