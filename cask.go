@@ -1,11 +1,18 @@
 package gocask
 
 import (
+	"os"
 	"strconv"
 )
 
+const (
+	SettingsFile = "./data/default_settings.json"
+	DataDir      = "./data/datfiles/"
+)
+
+var settings Settings
+
 type CaskOpts struct {
-	Role        string
 	SyncOnWrite bool
 }
 
@@ -18,6 +25,7 @@ type Index struct {
 
 type BitCaskHandle struct {
 	KeyDir map[string]Index
+	DBFile *os.File
 }
 
 func (b BitCaskHandle) Get(key string) (string, error) {
@@ -40,6 +48,15 @@ func (b BitCaskHandle) ListKeys() []string {
 	return keys
 }
 
+func init() {
+	loadSettings(&settings)
+}
+
 func Open(dir string) *BitCaskHandle {
+	// check if there are other bitcask instances
+	// get file next name
+	// create and open file
+	// read previous files and build KeyDir
+	// return bitcask instance
 	return nil
 }
