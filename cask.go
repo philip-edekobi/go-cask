@@ -2,7 +2,6 @@ package gocask
 
 import (
 	"os"
-	"strconv"
 
 	"github.com/philip-edekobi/go-cask/internal/dbmanager"
 )
@@ -21,24 +20,24 @@ type CaskOpts struct {
 
 type Index struct {
 	FileID    int
-	ValueSZ   int
-	ValuePos  int
+	Size      int
+	Position  int64
 	Timestamp int64
 }
 
 type BitCaskHandle struct {
-	KeyDir map[string]Index
+	KeyDir map[string]*Index
 	DBFile *os.File
 }
 
 func (b BitCaskHandle) Get(key string) (string, error) {
-	val, ok := b.KeyDir[key]
+	/* val */ _, ok := b.KeyDir[key]
 	if !ok {
 		return "", CaskError{"key not found in db"}
 	}
 
 	// TODO: write a function to extrace the value from the db file
-	return strconv.Itoa(val.ValuePos), nil
+	return "", nil
 }
 
 func (b BitCaskHandle) ListKeys() []string {
@@ -77,7 +76,10 @@ func Open(dir string) *BitCaskHandle {
 
 	// read previous files and build KeyDir
 	// TODO: if there are other bitcasks, copy their KeyDir
-	buildKeyDir(cask)
+	err = buildKeyDir(cask)
+	if err != nil {
+		panic(err)
+	}
 
 	// return bitcask instance
 	return cask

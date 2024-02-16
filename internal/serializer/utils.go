@@ -50,3 +50,7 @@ func verifyHash(record []byte) bool {
 
 	return slices.Compare(checksum, hashBytes) == 0
 }
+
+func getRecordLength(h *Header) int {
+	return HEADERLENGTH + h.KeySize + h.ValueSize
+}

@@ -20,3 +20,12 @@ func TestVerifyHash(t *testing.T) {
 
 	require.True(t, verifyHash(record))
 }
+
+func TestGetRecordLength(t *testing.T) {
+	enc := EncodeKV("hi", "hi")
+
+	h, err := DecodeHeader(enc[:20])
+
+	require.Nil(t, err)
+	require.Equal(t, len(enc), getRecordLength(h))
+}
