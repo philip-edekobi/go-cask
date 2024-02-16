@@ -3,13 +3,13 @@ package gocask
 import (
 	"io"
 	"os"
+	"strings"
 
 	"github.com/philip-edekobi/go-cask/internal/serializer"
 )
 
 func buildKeyDir(cask *BitCaskHandle) error {
-	keydir := cask.KeyDir
-
+	cask.KeyDir = make(map[string]*Index)
 	// for each file in datadir
 	entries, err := os.ReadDir(DataDir)
 	if err != nil {
@@ -17,7 +17,7 @@ func buildKeyDir(cask *BitCaskHandle) error {
 	}
 
 	for _, entry := range entries {
-		if entry.IsDir() {
+		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".data") {
 			continue
 		}
 
@@ -27,7 +27,7 @@ func buildKeyDir(cask *BitCaskHandle) error {
 		}
 		defer file.Close()
 
-		err = load(keydir, file)
+		err = load(cask.KeyDir, file)
 		if err != nil {
 			return err
 		}
@@ -60,8 +60,14 @@ func load(keydir map[string]*Index, file *os.File) error {
 
 	seekIndex, err = file.Seek(int64(seekIndex), io.SeekStart)
 
-	for err != nil {
+	for err == nil {
+		if seekIndex >= maxSize {
+			break
+		}
 		_, err = file.Read(currentHeader)
+		if err != nil {
+			return err
+		}
 
 		header, err := serializer.DecodeHeader(currentHeader)
 		if err != nil {
@@ -69,7 +75,17 @@ func load(keydir map[string]*Index, file *os.File) error {
 		}
 
 		recordBuf := make([]byte, header.KeySize+header.ValueSize+serializer.HEADERLENGTH)
+
+		copy(recordBuf[:serializer.HEADERLENGTH], currentHeader)
+		_, err = file.Read(recordBuf[serializer.HEADERLENGTH:])
+		if err != nil {
+			return err
+		}
+
 		record, err := serializer.DecodeKV(recordBuf)
+		if err != nil {
+			return err
+		}
 
 		id, err := getFileId(file.Name())
 		if err != nil {
@@ -78,13 +94,11 @@ func load(keydir map[string]*Index, file *os.File) error {
 
 		keydir[record.Key] = buildIndex(record, id, seekIndex)
 
-		nextIdx := int64(record.KeySz) + int64(record.ValueSz) + serializer.HEADERLENGTH
-		if nextIdx > maxSize {
-			break
-		}
-
 		// seekIndex, err = file.Seek(nextIdx, io.SeekStart) // here nextIdx = seekSTart + kv sized
-		seekIndex, err = file.Seek(nextIdx, io.SeekCurrent)
+		seekIndex, err = file.Seek(0, io.SeekCurrent)
+		if err != nil {
+			return err
+		}
 	}
 
 	if err != io.EOF {

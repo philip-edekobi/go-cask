@@ -1,7 +1,6 @@
 package gocask
 
 import (
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -21,17 +20,8 @@ func TestGetFileId(t *testing.T) {
 
 	require.Nil(t, err)
 
-	file, err := os.Create(name)
-	file.Close()
-
-	require.Nil(t, err)
-
-	id, err := getFileId(file.Name())
+	id, err := getFileId(name)
 
 	require.Nil(t, err)
 	require.Equal(t, 1, id)
-
-	err = os.Remove(name)
-
-	require.Nil(t, err)
 }
