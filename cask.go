@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/philip-edekobi/go-cask/internal/dbmanager"
+	"github.com/philip-edekobi/go-cask/internal/serializer"
 )
 
 const (
@@ -31,13 +32,33 @@ type BitCaskHandle struct {
 }
 
 func (b BitCaskHandle) Get(key string) (string, error) {
-	/* val */ _, ok := b.KeyDir[key]
+	index, ok := b.KeyDir[key]
 	if !ok {
 		return "", CaskError{"key not found in db"}
 	}
 
-	// TODO: write a function to extrace the value from the db file
-	return "", nil
+	rawData, err := dbmanager.ReadNBytesFromFileAt(b.DBFile, index.Size, index.Position)
+	if err != nil {
+		return "", err
+	}
+
+	dataRecord, err := serializer.DecodeKV(rawData)
+	if err != nil {
+		return "", err
+	}
+
+	return dataRecord.Value, nil
+}
+
+func (b BitCaskHandle) Set(key, val string) error {
+	rawData := serializer.EncodeKV(key, val)
+
+	err := dbmanager.WriteToFile(b.DBFile, rawData)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (b BitCaskHandle) ListKeys() []string {
