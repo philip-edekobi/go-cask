@@ -58,6 +58,7 @@ func TestGet(t *testing.T) {
 	require.Nil(t, err)
 
 	cask := Open("")
+	defer cask.Close()
 
 	err = cask.Set(k, v)
 	require.Nil(t, err)
@@ -145,6 +146,7 @@ func TestDelete(t *testing.T) {
 	require.Nil(t, err)
 
 	cask := Open("")
+	defer cask.Close()
 
 	for i := 0; i < len(keys); i++ {
 		cask.Set(keys[i], vals[i])
@@ -155,6 +157,11 @@ func TestDelete(t *testing.T) {
 
 	err = cask.Delete("age")
 	require.Nil(t, err)
+
+	v, err := cask.Get("age")
+	require.Nil(t, err)
+
+	require.Equal(t, "", v)
 
 	lKeys = cask.ListKeys()
 	require.Equal(t, keys[0], lKeys[0])

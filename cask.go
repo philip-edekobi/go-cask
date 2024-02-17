@@ -121,22 +121,20 @@ func Open(dir string) *BitCaskHandle {
 		DataDir = dir + "/"
 	}
 	cask := &BitCaskHandle{}
-	// check if there are other bitcask instances
 
-	// get file next name
+	// TODO: check if there are other bitcask instances
+
 	newFileName, err := nextFileName()
 	if err != nil {
 		panic(err)
 	}
 
-	// create and open file
 	dbFile, err := dbmanager.OpenFileRW(newFileName)
 	if err != nil {
 		panic(err)
 	}
 	cask.DBFile = dbFile
 
-	// read previous files and build KeyDir
 	// TODO: if there are other bitcasks, copy their KeyDir
 	err = buildKeyDir(cask)
 	if err != nil {
