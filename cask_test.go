@@ -105,6 +105,9 @@ func TestSet(t *testing.T) {
 			err := cask.Set(tc.keys[0], tc.vals[0])
 			require.ErrorIs(t, err, ErrBadKey)
 
+			err = cask.Sync()
+			require.Nil(t, err)
+
 			err = cask.Close()
 			require.Nil(t, err)
 
@@ -116,7 +119,9 @@ func TestSet(t *testing.T) {
 
 		for i := 0; i < len(tc.keys); i++ {
 			err := cask.Set(tc.keys[i], tc.vals[i])
+			require.Nil(t, err)
 
+			err = cask.Sync()
 			require.Nil(t, err)
 		}
 
@@ -130,4 +135,30 @@ func TestSet(t *testing.T) {
 		err = os.Remove(cask.DBFile.Name())
 		require.Nil(t, err)
 	}
+}
+
+func TestDelete(t *testing.T) {
+	keys := []string{"name", "age"}
+	vals := []string{"adam", "23"}
+
+	name, err := nextFileName()
+	require.Nil(t, err)
+
+	cask := Open("")
+
+	for i := 0; i < len(keys); i++ {
+		cask.Set(keys[i], vals[i])
+	}
+
+	lKeys := cask.ListKeys()
+	require.ElementsMatch(t, keys, lKeys)
+
+	err = cask.Delete("age")
+	require.Nil(t, err)
+
+	lKeys = cask.ListKeys()
+	require.Equal(t, keys[0], lKeys[0])
+
+	err = os.Remove(name)
+	require.Nil(t, err)
 }
