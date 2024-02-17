@@ -7,7 +7,7 @@ import (
 )
 
 func TestNextFileName(t *testing.T) {
-	DataDir = "."
+	DataDir = "./"
 	name, err := nextFileName()
 
 	require.Nil(t, err)

@@ -12,7 +12,7 @@ const (
 	SettingsFile = "./data/default_settings.json"
 )
 
-var DataDir = "./data/datfiles"
+var DataDir = "./data/datfiles/"
 
 var settings Settings
 

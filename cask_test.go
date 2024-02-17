@@ -13,7 +13,7 @@ func TestOpen(t *testing.T) {
 
 	db := Open("")
 
-	require.Equal(t, "./data/datfiles", DataDir)
+	require.Equal(t, "./data/datfiles/", DataDir)
 	require.Equal(t, name, db.DBFile.Name())
 
 	db2 := Open("./testDir")
@@ -28,6 +28,9 @@ func TestOpen(t *testing.T) {
 	require.Nil(t, err)
 
 	err = os.Remove(name)
+	require.Nil(t, err)
+
+	err = os.Remove(db2.DBFile.Name())
 	require.Nil(t, err)
 }
 
@@ -79,6 +82,12 @@ func TestSet(t *testing.T) {
 		if i == 2 {
 			err := cask.Set(tc.keys[0], tc.vals[0])
 			require.ErrorIs(t, err, ErrBadKey{})
+
+			err = cask.Close()
+			require.Nil(t, err)
+
+			err = os.Remove(cask.DBFile.Name())
+			require.Nil(t, err)
 
 			continue
 		}
