@@ -21,7 +21,7 @@ func buildKeyDir(cask *BitCaskHandle) error {
 			continue
 		}
 
-		file, err := os.Open(entry.Name())
+		file, err := os.Open(DataDir + entry.Name())
 		if err != nil {
 			return err
 		}

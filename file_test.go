@@ -11,7 +11,7 @@ func TestNextFileName(t *testing.T) {
 	name, err := nextFileName()
 
 	require.Nil(t, err)
-	require.Equal(t, "././gocask_1.data", name)
+	require.Equal(t, "./gocask_1.data", name)
 }
 
 func TestGetFileId(t *testing.T) {

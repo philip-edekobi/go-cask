@@ -21,7 +21,7 @@ func nextFileName() (string, error) {
 		}
 	}
 
-	return DataDir + name + strconv.Itoa(number) + ".data", nil
+	return name + strconv.Itoa(number) + ".data", nil
 }
 
 func getFileId(name string) (int, error) {
