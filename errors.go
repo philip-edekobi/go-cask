@@ -1,6 +1,7 @@
 package gocask
 
 import (
+	"errors"
 	"fmt"
 )
 
@@ -12,8 +13,7 @@ func (e CaskError) Error() string {
 	return fmt.Sprintf(e.message)
 }
 
-type ErrBadKey struct{}
-
-func (e ErrBadKey) Error() string {
-	return "invalid key"
-}
+var (
+	ErrBadKey      = errors.New("invalid key")
+	ErrKeyNotFound = errors.New("the required key does not exist")
+)

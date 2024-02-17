@@ -35,7 +35,7 @@ type BitCaskHandle struct {
 func (b BitCaskHandle) Get(key string) (string, error) {
 	index, ok := b.KeyDir[key]
 	if !ok {
-		return "", CaskError{"key not found in db"}
+		return "", ErrKeyNotFound
 	}
 
 	rawData, err := dbmanager.ReadNBytesFromFileAt(b.DBFile, index.Size, index.Position)
@@ -53,7 +53,7 @@ func (b BitCaskHandle) Get(key string) (string, error) {
 
 func (b BitCaskHandle) Set(key, val string) error {
 	if len(key) == 0 {
-		return ErrBadKey{}
+		return ErrBadKey
 	}
 	pos, err := b.DBFile.Seek(0, io.SeekEnd)
 	if err != nil {

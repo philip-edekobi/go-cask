@@ -68,7 +68,7 @@ func TestGet(t *testing.T) {
 
 	val, err = cask.Get("alpha")
 	require.Equal(t, "", val)
-	require.ErrorIs(t, CaskError{"key not found in db"}, err)
+	require.ErrorIs(t, ErrKeyNotFound, err)
 
 	err = os.Remove(name)
 	require.Nil(t, err)
@@ -103,7 +103,7 @@ func TestSet(t *testing.T) {
 
 		if i == 2 {
 			err := cask.Set(tc.keys[0], tc.vals[0])
-			require.ErrorIs(t, err, ErrBadKey{})
+			require.ErrorIs(t, err, ErrBadKey)
 
 			err = cask.Close()
 			require.Nil(t, err)

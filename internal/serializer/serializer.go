@@ -1,5 +1,9 @@
 package serializer
 
+import (
+	"errors"
+)
+
 const (
 	TIMESTAMPSIZE = 8 // in bytes
 	FIELDSIZE     = 4
@@ -22,11 +26,7 @@ type Record struct {
 	Value       string
 }
 
-type ErrCorruptedRecord struct{}
-
-func (c ErrCorruptedRecord) Error() string {
-	return "data does not match checksum"
-}
+var ErrCorruptedRecord = errors.New("data does not match checksum")
 
 type ErrInvalidHeader struct{}
 

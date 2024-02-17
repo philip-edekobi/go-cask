@@ -9,7 +9,7 @@ func DecodeKV(record []byte) (*Record, error) {
 	var start, end int
 
 	if !verifyHash(record) {
-		return nil, ErrCorruptedRecord{}
+		return nil, ErrCorruptedRecord
 	}
 
 	end = FIELDSIZE
