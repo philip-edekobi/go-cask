@@ -50,7 +50,25 @@ func TestClose(t *testing.T) {
 	require.Nil(t, err)
 }
 
-// func TestGet(t *testing.T) {}
+func TestGet(t *testing.T) {
+	k := "name"
+	v := "albert"
+
+	name, err := nextFileName()
+	require.Nil(t, err)
+
+	cask := Open("")
+
+	err = cask.Set(k, v)
+	require.Nil(t, err)
+
+	val, err := cask.Get(k)
+	require.Nil(t, err)
+	require.Equal(t, v, val)
+
+	err = os.Remove(name)
+	require.Nil(t, err)
+}
 
 func TestSet(t *testing.T) {
 	DataDir = "./testDir/"
