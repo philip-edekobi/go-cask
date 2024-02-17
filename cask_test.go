@@ -66,6 +66,10 @@ func TestGet(t *testing.T) {
 	require.Nil(t, err)
 	require.Equal(t, v, val)
 
+	val, err = cask.Get("alpha")
+	require.Equal(t, "", val)
+	require.ErrorIs(t, CaskError{"key not found in db"}, err)
+
 	err = os.Remove(name)
 	require.Nil(t, err)
 }
