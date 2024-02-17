@@ -1,6 +1,8 @@
 package gocask
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type CaskError struct {
 	message string
@@ -8,4 +10,10 @@ type CaskError struct {
 
 func (e CaskError) Error() string {
 	return fmt.Sprintf(e.message)
+}
+
+type ErrBadKey struct{}
+
+func (e ErrBadKey) Error() string {
+	return "invalid key"
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func nextFileName() (string, error) {
-	name := DataDir + "gocask_"
+	name := DataDir + "/gocask_"
 	number := 1
 
 	dir, err := os.ReadDir(DataDir)
