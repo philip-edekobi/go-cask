@@ -110,7 +110,16 @@ func (b BitCaskHandle) Close() error {
 	return err
 }
 
-// func (b BitCaskHandle) Merge() error {}
+func (b BitCaskHandle) Merge() error {
+	// create a new map[string]*Record and new ".data" File
+	// for each file in dataDir:
+	// read them and update their shii in the map, delete keys with empty value fields
+	// make a "tmp.data" file and decode and write every encoded kv pair to it
+	// rename the file to the #1 file and delete all the files in the dataDir
+	// open a new bitcask in that directory and return that???
+
+	return nil
+}
 
 func init() {
 	loadSettings(&settings)
