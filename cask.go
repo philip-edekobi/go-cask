@@ -1,6 +1,7 @@
 package gocask
 
 import (
+	"fmt"
 	"io"
 	"os"
 
@@ -39,6 +40,7 @@ func (b BitCaskHandle) Get(key string) (string, error) {
 	}
 
 	fName := getFileNameFromID(index.FileID)
+	fmt.Println("fileNameeeeeeeeeeeE:", fName)
 	file, err := os.Open(fName)
 	if err != nil {
 		return "", err
