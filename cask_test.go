@@ -8,19 +8,19 @@ import (
 )
 
 func TestOpen(t *testing.T) {
-	name, err := nextFileName()
+	name, err := nextFileName("./data/datfiles/")
 	require.Nil(t, err)
 
-	db, err := Open("")
+	db, err := Open("./data/datfiles/")
 	require.Nil(t, err)
 
-	require.Equal(t, "./data/datfiles/", DataDir)
+	require.Equal(t, "./data/datfiles/", db.DataDir)
 	require.Equal(t, name, db.DBFile.Name())
 
-	db2, err := Open("./testDir")
+	db2, err := Open("./testDir/")
 	require.Nil(t, err)
 
-	require.Equal(t, "./testDir/", DataDir)
+	require.Equal(t, "./testDir/", db2.DataDir)
 
 	err = db.DBFile.Close()
 	require.Nil(t, err)
@@ -36,10 +36,10 @@ func TestOpen(t *testing.T) {
 }
 
 func TestClose(t *testing.T) {
-	name, err := nextFileName()
+	name, err := nextFileName("./data/datfiles/")
 	require.Nil(t, err)
 
-	db, err := Open("")
+	db, err := Open("./data/datfiles/")
 	require.Nil(t, err)
 
 	err = db.Close()
@@ -56,10 +56,10 @@ func TestGet(t *testing.T) {
 	k := "name"
 	v := "albert"
 
-	name, err := nextFileName()
+	name, err := nextFileName("./data/datfiles/")
 	require.Nil(t, err)
 
-	cask, err := Open("")
+	cask, err := Open("./data/datfiles/")
 	require.Nil(t, err)
 
 	err = cask.Set(k, v)
@@ -74,10 +74,10 @@ func TestGet(t *testing.T) {
 	require.ErrorIs(t, ErrKeyNotFound, err)
 	cask.Close()
 
-	name2, err := nextFileName()
+	name2, err := nextFileName("./data/datfiles/")
 	require.Nil(t, err)
 
-	cask, err = Open("")
+	cask, err = Open("./data/datfiles/")
 	require.Nil(t, err)
 	defer cask.Close()
 
@@ -96,7 +96,7 @@ func TestGet(t *testing.T) {
 }
 
 func TestSet(t *testing.T) {
-	DataDir = "./testDir/"
+	DataDir := "./testDir/"
 
 	testCases := []struct {
 		keys      []string
@@ -120,7 +120,7 @@ func TestSet(t *testing.T) {
 	}
 
 	for i, tc := range testCases {
-		cask, err := Open("")
+		cask, err := Open(DataDir)
 		require.Nil(t, err)
 
 		if i == 2 {
@@ -163,7 +163,7 @@ func TestDelete(t *testing.T) {
 	keys := []string{"name", "age"}
 	vals := []string{"adam", "23"}
 
-	name, err := nextFileName()
+	name, err := nextFileName("./data/datfiles/")
 	require.Nil(t, err)
 
 	cask, err := Open("")

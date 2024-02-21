@@ -7,16 +7,16 @@ import (
 )
 
 func TestNextFileName(t *testing.T) {
-	DataDir = "./"
-	name, err := nextFileName()
+	DataDir := "./"
+	name, err := nextFileName(DataDir)
 
 	require.Nil(t, err)
 	require.Equal(t, "./gocask_1.data", name)
 }
 
 func TestGetFileId(t *testing.T) {
-	DataDir = "."
-	name, err := nextFileName()
+	DataDir := "."
+	name, err := nextFileName(DataDir)
 
 	require.Nil(t, err)
 
@@ -27,8 +27,9 @@ func TestGetFileId(t *testing.T) {
 }
 
 func TestGetFName(t *testing.T) {
+	DataDir := "."
 	n := 5
-	name := getFileNameFromID(n)
+	name := getFileNameFromID(DataDir, n)
 
 	require.Equal(t, DataDir+"gocask_5.data", name)
 }

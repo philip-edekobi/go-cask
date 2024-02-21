@@ -6,11 +6,11 @@ import (
 	"strings"
 )
 
-func nextFileName() (string, error) {
-	name := DataDir + "gocask_"
+func nextFileName(dataDir string) (string, error) {
+	name := dataDir + "gocask_"
 	number := 1
 
-	dir, err := os.ReadDir(DataDir)
+	dir, err := os.ReadDir(dataDir)
 	if err != nil {
 		return "", err
 	}
@@ -37,6 +37,6 @@ func getFileId(name string) (int, error) {
 	return num, nil
 }
 
-func getFileNameFromID(id int) string {
-	return DataDir + "gocask_" + strconv.Itoa(id) + ".data"
+func getFileNameFromID(dataDir string, id int) string {
+	return dataDir + "gocask_" + strconv.Itoa(id) + ".data"
 }

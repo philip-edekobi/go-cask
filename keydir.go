@@ -11,7 +11,7 @@ import (
 func buildKeyDir(cask *BitCaskHandle) error {
 	cask.KeyDir = make(map[string]*Index)
 	// for each file in datadir
-	entries, err := os.ReadDir(DataDir)
+	entries, err := os.ReadDir(cask.DataDir)
 	if err != nil {
 		return err
 	}
@@ -21,7 +21,7 @@ func buildKeyDir(cask *BitCaskHandle) error {
 			continue
 		}
 
-		file, err := os.Open(DataDir + entry.Name())
+		file, err := os.Open(cask.DataDir + entry.Name())
 		if err != nil {
 			return err
 		}

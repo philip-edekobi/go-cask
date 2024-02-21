@@ -12,8 +12,6 @@ const (
 	SettingsFile = "./data/default_settings.json"
 )
 
-var DataDir = "./data/datfiles/"
-
 var settings Settings
 
 type CaskOpts struct {
@@ -28,8 +26,9 @@ type Index struct {
 }
 
 type BitCaskHandle struct {
-	KeyDir map[string]*Index
-	DBFile *os.File
+	KeyDir  map[string]*Index
+	DBFile  *os.File
+	DataDir string
 }
 
 func (b BitCaskHandle) Get(key string) (string, error) {
@@ -48,7 +47,7 @@ func (b BitCaskHandle) Get(key string) (string, error) {
 	if currID == index.FileID {
 		file = b.DBFile
 	} else {
-		fName := getFileNameFromID(index.FileID)
+		fName := getFileNameFromID(b.DataDir, index.FileID)
 
 		file, err = os.Open(fName)
 		if err != nil {
@@ -145,17 +144,19 @@ func init() {
 }
 
 func Open(dir string) (*BitCaskHandle, error) {
+	cask := &BitCaskHandle{}
+	cask.DataDir = "./data/datfiles/"
+
 	if len(dir) > 0 {
 		if dir[len(dir)-1] != '/' {
 			dir += "/"
 		}
-		DataDir = dir
+		cask.DataDir = dir
 	}
-	cask := &BitCaskHandle{}
 
 	// TODO: check if there are other bitcask instances
 
-	newFileName, err := nextFileName()
+	newFileName, err := nextFileName(cask.DataDir)
 	if err != nil {
 		return nil, err
 	}

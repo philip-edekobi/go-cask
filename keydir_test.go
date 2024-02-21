@@ -120,8 +120,8 @@ func TestLoad(t *testing.T) {
 }
 
 func TestBuildKeyDir(t *testing.T) {
-	DataDir = "./"
 	cask := &BitCaskHandle{}
+	cask.DataDir = "./"
 
 	keys := []string{"name", "nom"}
 	vals := []string{"Adam", "Mohammed"}
