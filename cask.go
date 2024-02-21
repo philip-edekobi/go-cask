@@ -1,7 +1,6 @@
 package gocask
 
 import (
-	"fmt"
 	"io"
 	"os"
 
@@ -39,13 +38,24 @@ func (b BitCaskHandle) Get(key string) (string, error) {
 		return "", ErrKeyNotFound
 	}
 
-	fName := getFileNameFromID(index.FileID)
-	fmt.Println("fileNameeeeeeeeeeeE:", fName)
-	file, err := os.Open(fName)
+	var file *os.File
+
+	currID, err := getFileId(b.DBFile.Name())
 	if err != nil {
 		return "", err
 	}
-	defer file.Close()
+
+	if currID == index.FileID {
+		file = b.DBFile
+	} else {
+		fName := getFileNameFromID(index.FileID)
+
+		file, err = os.Open(fName)
+		if err != nil {
+			return "", err
+		}
+		defer file.Close()
+	}
 
 	rawData, err := dbmanager.ReadNBytesFromFileAt(file, index.Size, index.Position)
 	if err != nil {
