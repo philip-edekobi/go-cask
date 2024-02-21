@@ -38,7 +38,14 @@ func (b BitCaskHandle) Get(key string) (string, error) {
 		return "", ErrKeyNotFound
 	}
 
-	rawData, err := dbmanager.ReadNBytesFromFileAt(b.DBFile, index.Size, index.Position)
+	fName := getFileNameFromID(index.FileID)
+	file, err := os.Open(fName)
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	rawData, err := dbmanager.ReadNBytesFromFileAt(file, index.Size, index.Position)
 	if err != nil {
 		return "", err
 	}

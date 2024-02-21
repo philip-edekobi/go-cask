@@ -25,3 +25,10 @@ func TestGetFileId(t *testing.T) {
 	require.Nil(t, err)
 	require.Equal(t, 1, id)
 }
+
+func TestGetFName(t *testing.T) {
+	n := 5
+	name := getFileNameFromID(n)
+
+	require.Equal(t, DataDir+"gocask_5.data", name)
+}

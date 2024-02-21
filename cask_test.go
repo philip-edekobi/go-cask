@@ -11,12 +11,13 @@ func TestOpen(t *testing.T) {
 	name, err := nextFileName()
 	require.Nil(t, err)
 
-	db := Open("")
+	db, err := Open("")
+	require.Nil(t, err)
 
 	require.Equal(t, "./data/datfiles/", DataDir)
 	require.Equal(t, name, db.DBFile.Name())
 
-	db2 := Open("./testDir")
+	db2, err := Open("./testDir")
 	require.Nil(t, err)
 
 	require.Equal(t, "./testDir/", DataDir)
@@ -38,7 +39,8 @@ func TestClose(t *testing.T) {
 	name, err := nextFileName()
 	require.Nil(t, err)
 
-	db := Open("")
+	db, err := Open("")
+	require.Nil(t, err)
 
 	err = db.Close()
 	require.Nil(t, err)
@@ -57,8 +59,8 @@ func TestGet(t *testing.T) {
 	name, err := nextFileName()
 	require.Nil(t, err)
 
-	cask := Open("")
-	defer cask.Close()
+	cask, err := Open("")
+	require.Nil(t, err)
 
 	err = cask.Set(k, v)
 	require.Nil(t, err)
@@ -70,8 +72,26 @@ func TestGet(t *testing.T) {
 	val, err = cask.Get("alpha")
 	require.Equal(t, "", val)
 	require.ErrorIs(t, ErrKeyNotFound, err)
+	cask.Close()
+
+	name2, err := nextFileName()
+	require.Nil(t, err)
+
+	cask, err = Open("")
+	require.Nil(t, err)
+	defer cask.Close()
+
+	err = cask.Set("hey", "hi")
+	require.Nil(t, err)
+
+	val, err = cask.Get(k)
+	require.Nil(t, err)
+	require.Equal(t, v, val)
 
 	err = os.Remove(name)
+	require.Nil(t, err)
+
+	err = os.Remove(name2)
 	require.Nil(t, err)
 }
 
@@ -100,7 +120,8 @@ func TestSet(t *testing.T) {
 	}
 
 	for i, tc := range testCases {
-		cask := Open("")
+		cask, err := Open("")
+		require.Nil(t, err)
 
 		if i == 2 {
 			err := cask.Set(tc.keys[0], tc.vals[0])
@@ -145,7 +166,8 @@ func TestDelete(t *testing.T) {
 	name, err := nextFileName()
 	require.Nil(t, err)
 
-	cask := Open("")
+	cask, err := Open("")
+	require.Nil(t, err)
 	defer cask.Close()
 
 	for i := 0; i < len(keys); i++ {

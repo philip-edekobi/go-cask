@@ -36,3 +36,7 @@ func getFileId(name string) (int, error) {
 
 	return num, nil
 }
+
+func getFileNameFromID(id int) string {
+	return DataDir + "gocask_" + strconv.Itoa(id) + ".data"
+}
