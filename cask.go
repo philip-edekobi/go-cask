@@ -127,7 +127,10 @@ func init() {
 
 func Open(dir string) (*BitCaskHandle, error) {
 	if len(dir) > 0 {
-		DataDir = dir + "/"
+		if dir[len(dir)-1] != '/' {
+			dir += "/"
+		}
+		DataDir = dir
 	}
 	cask := &BitCaskHandle{}
 
